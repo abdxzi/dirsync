@@ -3,6 +3,7 @@ use std::path::Path;
 use std::sync::mpsc::channel;
 use std::time::Duration;
 
+
 pub fn start(path: String, api_key: String) {
     let (tx, rx) = channel();
 

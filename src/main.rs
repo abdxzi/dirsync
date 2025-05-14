@@ -1,8 +1,36 @@
+mod config;
+mod daemon;
 mod watcher;
 mod cloud;
-mod config;
+
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    New {
+        #[arg(long)]
+        path: String,
+        #[arg(long)]
+        api_key: String,
+    },
+    Daemon,
+}
 
 fn main() {
-    let cfg = config::load();
-    watcher::start(cfg.watch_path, cfg.cloud_key);
+    let cli = Cli::parse();
+
+    match cli.command {
+        Commands::New { path, api_key } => {
+            crate::config::add_watch(path, api_key);
+        }
+        Commands::Daemon => {
+            crate::daemon::start_all();
+        }
+    }
 }
